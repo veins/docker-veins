@@ -74,6 +74,7 @@ ARG sumo_version=1.4.0
 ARG SUMO_VERSION=$sumo_version
 
 COPY stage1-sumo.sh .
+COPY patches/sumo-0.30.0.patch /tmp
 RUN ./stage1-sumo.sh && rm ./stage1-sumo.sh
 
 

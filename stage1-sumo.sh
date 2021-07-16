@@ -26,7 +26,7 @@
 set -e
 
 # prerequisites for SUMO
-apt-get -y install git curl cmake libxerces-c-dev libgdal-dev libproj-dev
+apt-get -y install git curl cmake libxerces-c-dev libgdal-dev libproj-dev libfox-1.6-dev
 
 export SUMO_TAG=v$(echo "$SUMO_VERSION" | tr . _)
 
@@ -37,6 +37,12 @@ export PATH=$PATH:/opt/sumo/bin
 cd sumo
 
 case "$SUMO_VERSION" in
+0.30.0)
+    # SUMO 0.30.0 needs a patch to compile
+    cat /tmp/sumo-0.30.0.patch | patch -p1
+    mv sumo/* .
+    rmdir sumo
+    ;;
 0.32.0)
     # SUMO 0.32.0 needs a patch to compile
     curl --location https://github.com/eclipse/sumo/files/2159974/patch-sumo-0.32.0-ComparatorIdLess.txt | patch -p1
@@ -46,7 +52,7 @@ case "$SUMO_VERSION" in
 esac
 
 case "$SUMO_VERSION" in
-0.32.0)
+0.30.0 | 0.32.0)
     make -f Makefile.cvs
     ./configure
     make -j8
